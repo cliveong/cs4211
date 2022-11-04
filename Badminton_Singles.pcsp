@@ -48,158 +48,158 @@ NextPt = Player1Serve [] Player2Serve [] ([won != na] GameOver -> Skip);
 //Service Events
 // player 1 serves at position 4
 Ply1_Serve_RHS = pcase {
-			6: ServeHigh_in{shuttlecock = 11} -> Ply2_back_stroke_RHS  
-			30: ServeLow_in{shuttlecock = 9} -> Ply2_mid_stroke_RHS
-			2: Serve_err{shuttlecock = 13} ->  Ply2_scores
+			6: Ply1_pos.4 -> ServeHigh_in{shuttlecock = 11} -> Ply2_back_stroke_RHS  
+			30: Ply1_pos.4 -> ServeLow_in{shuttlecock = 9} -> Ply2_mid_stroke_RHS
+			2: Ply1_pos.4 -> Serve_err{shuttlecock = 13} ->  Ply2_scores
 			};
-
+			
 // player 1 serves at position 3
 Ply1_Serve_LHS = pcase{
-			4: ServeHigh_in{shuttlecock = 12} -> Ply2_back_stroke_LHS 
-			29: ServeLow_in{shuttlecock = 10} -> Ply2_mid_stroke_LHS
-			1: Serve_err{shuttlecock = 13} -> Ply2_scores
+			4: Ply1_pos.3 -> ServeHigh_in{shuttlecock = 12} -> Ply2_back_stroke_LHS 
+			29: Ply1_pos.3 -> ServeLow_in{shuttlecock = 10} -> Ply2_mid_stroke_LHS
+			1: Ply1_pos.3 -> Serve_err{shuttlecock = 13} -> Ply2_scores
 			};
 			
 
 // player 2 serves at position 9
 Ply2_Serve_RHS = pcase {                             
-			7: ServeHigh_in{shuttlecock = 2} -> Ply1_back_stroke_RHS  
-			30: ServeLow_in{shuttlecock = 4} -> Ply1_mid_stroke_RHS
-			2: Serve_err{shuttlecock = 13} -> Ply1_scores
+			7: Ply2_pos.9 -> ServeHigh_in{shuttlecock = 2} -> Ply1_back_stroke_RHS  
+			30:Ply2_pos.9 -> ServeLow_in{shuttlecock = 4} -> Ply1_mid_stroke_RHS
+			2: Ply2_pos.9 -> Serve_err{shuttlecock = 13} -> Ply1_scores
 			};
 
 // player 2 serves at position 10
 Ply2_Serve_LHS = pcase {                             
-			6: ServeHigh_in{shuttlecock = 1} -> Ply1_back_stroke_LHS  
-			29: ServeLow_in{shuttlecock = 3} -> Ply1_mid_stroke_LHS
-			1: Serve_err{shuttlecock = 13} -> Ply1_scores
+			6: Ply2_pos.10 -> ServeHigh_in{shuttlecock = 1} -> Ply1_back_stroke_LHS  
+			29: Ply2_pos.10 -> ServeLow_in{shuttlecock = 3} -> Ply1_mid_stroke_LHS
+			1: Ply2_pos.10 -> Serve_err{shuttlecock = 13} -> Ply1_scores
 			};
 
 // Back Stroke Events
 // player 1 receives at position 2
 Ply1_back_stroke_RHS = pcase { 
-			13: Lob_straight{shuttlecock = 12} -> Ply2_back_stroke_LHS
-			7: Lob_cross{shuttlecock = 11} -> Ply2_back_stroke_RHS
-			9: Drop_straight{shuttlecock = 8} -> Ply2_front_stroke_LHS
-			11: Drop_cross{shuttlecock = 7} -> Ply2_front_stroke_RHS
-			28: Smash_straight{shuttlecock = 10} -> Ply2_mid_stroke_LHS
-			21: Smash_cross{shuttlecock = 9} -> Ply2_mid_stroke_RHS
-			8: Error {shuttlecock = 13} -> Ply2_scores    		                                                            
+			13: Ply1_pos.2 -> Lob_straight{shuttlecock = 12} -> Ply2_back_stroke_LHS
+			7: Ply1_pos.2 -> Lob_cross{shuttlecock = 11} -> Ply2_back_stroke_RHS
+			9: Ply1_pos.2 -> Drop_straight{shuttlecock = 8} -> Ply2_front_stroke_LHS
+			11: Ply1_pos.2 -> Drop_cross{shuttlecock = 7} -> Ply2_front_stroke_RHS
+			28: Ply1_pos.2 -> Smash_straight{shuttlecock = 10} -> Ply2_mid_stroke_LHS
+			21: Ply1_pos.2 -> Smash_cross{shuttlecock = 9} -> Ply2_mid_stroke_RHS
+			8: Ply1_pos.2 -> Error {shuttlecock = 13} -> Ply2_scores    		                                                            
 			};
 
 // player 1 receives at position 1
 Ply1_back_stroke_LHS = pcase { 
-			15: Lob_straight{shuttlecock = 11} -> Ply2_back_stroke_RHS
-			18: Lob_cross{shuttlecock = 12} -> Ply2_back_stroke_LHS
-			7: Drop_straight{shuttlecock = 7} -> Ply2_front_stroke_RHS
-			18: Drop_cross{shuttlecock = 8} -> Ply2_front_stroke_LHS
-			52: Smash_straight{shuttlecock = 9} -> Ply2_mid_stroke_RHS
-			25: Smash_cross{shuttlecock = 10} -> Ply2_mid_stroke_LHS
-			7: Error {shuttlecock = 13} -> Ply2_scores    		                                                            
+			15: Ply1_pos.1 -> Lob_straight{shuttlecock = 11} -> Ply2_back_stroke_RHS
+			18: Ply1_pos.1 -> Lob_cross{shuttlecock = 12} -> Ply2_back_stroke_LHS
+			7: Ply1_pos.1 -> Drop_straight{shuttlecock = 7} -> Ply2_front_stroke_RHS
+			18: Ply1_pos.1 -> Drop_cross{shuttlecock = 8} -> Ply2_front_stroke_LHS
+			52: Ply1_pos.1 -> Smash_straight{shuttlecock = 9} -> Ply2_mid_stroke_RHS
+			25: Ply1_pos.1 -> Smash_cross{shuttlecock = 10} -> Ply2_mid_stroke_LHS
+			7: Ply1_pos.1 -> Error {shuttlecock = 13} -> Ply2_scores    		                                                            
 			};
 
 // player 2 receives at position 11
 Ply2_back_stroke_RHS = pcase { 
-			8: Lob_straight{shuttlecock = 1} -> Ply1_back_stroke_LHS
-			6: Lob_cross{shuttlecock = 2} -> Ply1_back_stroke_RHS
-			4: Drop_straight{shuttlecock = 5} -> Ply1_front_stroke_LHS
-			15: Drop_cross{shuttlecock = 6} -> Ply1_front_stroke_RHS
-			35: Smash_straight{shuttlecock = 3} -> Ply1_mid_stroke_LHS
-			24: Smash_cross{shuttlecock = 4} -> Ply1_mid_stroke_RHS
-			4: Error {shuttlecock = 13} -> Ply1_scores   		                                                            
+			8: Ply2_pos.11 -> Lob_straight{shuttlecock = 1} -> Ply1_back_stroke_LHS
+			6: Ply2_pos.11 -> Lob_cross{shuttlecock = 2} -> Ply1_back_stroke_RHS
+			4: Ply2_pos.11 -> Drop_straight{shuttlecock = 5} -> Ply1_front_stroke_LHS
+			15: Ply2_pos.11 -> Drop_cross{shuttlecock = 6} -> Ply1_front_stroke_RHS
+			35: Ply2_pos.11 -> Smash_straight{shuttlecock = 3} -> Ply1_mid_stroke_LHS
+			24: Ply2_pos.11 -> Smash_cross{shuttlecock = 4} -> Ply1_mid_stroke_RHS
+			4: Ply2_pos.11 -> Error {shuttlecock = 13} -> Ply1_scores   		                                                            
 			};
 
 // player 2 receives at position 12
 Ply2_back_stroke_LHS = pcase { 
-			23: Lob_straight{shuttlecock = 2} -> Ply1_back_stroke_RHS
-			15: Lob_cross{shuttlecock = 1} -> Ply1_back_stroke_LHS
-			1: Drop_straight{shuttlecock = 6} -> Ply1_front_stroke_RHS
-			10: Drop_cross{shuttlecock = 5} -> Ply1_front_stroke_LHS
-			54: Smash_straight{shuttlecock = 4} -> Ply1_mid_stroke_RHS
-			30: Smash_cross{shuttlecock = 3} -> Ply1_mid_stroke_LHS
-			11: Error {shuttlecock = 13} -> Ply1_scores 		                                                            
+			23: Ply2_pos.12 -> Lob_straight{shuttlecock = 2} -> Ply1_back_stroke_RHS
+			15: Ply2_pos.12 -> Lob_cross{shuttlecock = 1} -> Ply1_back_stroke_LHS
+			1: Ply2_pos.12 -> Drop_straight{shuttlecock = 6} -> Ply1_front_stroke_RHS
+			10: Ply2_pos.12 -> Drop_cross{shuttlecock = 5} -> Ply1_front_stroke_LHS
+			54: Ply2_pos.12 -> Smash_straight{shuttlecock = 4} -> Ply1_mid_stroke_RHS
+			30: Ply2_pos.12 -> Smash_cross{shuttlecock = 3} -> Ply1_mid_stroke_LHS
+			11: Ply2_pos.12 -> Error {shuttlecock = 13} -> Ply1_scores 		                                                            
 			};
 
 // Mid Stroke Events
 // player 1 receives at position 4
 Ply1_mid_stroke_RHS = pcase { 
-			62: Low_straight{shuttlecock = 8} -> Ply2_front_stroke_LHS
-			20: Low_cross{shuttlecock = 7} -> Ply2_front_stroke_RHS
-			17: High_straight{shuttlecock = 12} -> Ply2_back_stroke_LHS
-			6: High_cross{shuttlecock = 11} -> Ply2_back_stroke_RHS
-			52: Push_straight{shuttlecock = 10} -> Ply2_mid_stroke_LHS
-			35: Push_cross{shuttlecock = 9} -> Ply2_mid_stroke_RHS
-			22: Error {shuttlecock = 13} -> Ply2_scores  		                                                            
+			62: Ply1_pos.4 -> Low_straight{shuttlecock = 8} -> Ply2_front_stroke_LHS
+			20: Ply1_pos.4 -> Low_cross{shuttlecock = 7} -> Ply2_front_stroke_RHS
+			17: Ply1_pos.4 -> High_straight{shuttlecock = 12} -> Ply2_back_stroke_LHS
+			6: Ply1_pos.4 -> High_cross{shuttlecock = 11} -> Ply2_back_stroke_RHS
+			52: Ply1_pos.4 -> Push_straight{shuttlecock = 10} -> Ply2_mid_stroke_LHS
+			35: Ply1_pos.4 -> Push_cross{shuttlecock = 9} -> Ply2_mid_stroke_RHS
+			22: Ply1_pos.4 -> Error {shuttlecock = 13} -> Ply2_scores  		                                                            
 			};
 
 // player 1 receives at position 3
 Ply1_mid_stroke_LHS = pcase { 
-			63: Low_straight{shuttlecock = 7} -> Ply2_front_stroke_RHS
-			11: Low_cross{shuttlecock = 8} -> Ply2_front_stroke_LHS
-			21: High_straight{shuttlecock = 11} -> Ply2_back_stroke_RHS
-			8: High_cross{shuttlecock = 12} -> Ply2_back_stroke_LHS
-			59: Push_straight{shuttlecock = 9} -> Ply2_mid_stroke_RHS
-			49: Push_cross{shuttlecock = 10} -> Ply2_mid_stroke_LHS
-			13: Error {shuttlecock = 13} -> Ply2_scores      		                                                            
+			63: Ply1_pos.3 -> Low_straight{shuttlecock = 7} -> Ply2_front_stroke_RHS
+			11: Ply1_pos.3 -> Low_cross{shuttlecock = 8} -> Ply2_front_stroke_LHS
+			21: Ply1_pos.3 -> High_straight{shuttlecock = 11} -> Ply2_back_stroke_RHS
+			8: Ply1_pos.3 -> High_cross{shuttlecock = 12} -> Ply2_back_stroke_LHS
+			59: Ply1_pos.3 -> Push_straight{shuttlecock = 9} -> Ply2_mid_stroke_RHS
+			49: Ply1_pos.3 -> Push_cross{shuttlecock = 10} -> Ply2_mid_stroke_LHS
+			13: Ply1_pos.3 -> Error {shuttlecock = 13} -> Ply2_scores      		                                                            
 			};
 
 // player 2 receives at position 9
 Ply2_mid_stroke_RHS = pcase { 
-			39: Low_straight{shuttlecock = 5} -> Ply1_front_stroke_LHS
-			18: Low_cross{shuttlecock = 6} -> Ply1_front_stroke_RHS
-			13: High_straight{shuttlecock = 1} -> Ply1_back_stroke_LHS
-			7: High_cross{shuttlecock = 2} -> Ply1_back_stroke_RHS
-			54: Push_straight{shuttlecock = 3} -> Ply1_mid_stroke_LHS
-			55: Push_cross{shuttlecock = 4} -> Ply1_mid_stroke_RHS
-			23: Error {shuttlecock = 13} -> Ply1_scores   		                                                            
+			39: Ply2_pos.9 -> Low_straight{shuttlecock = 5} -> Ply1_front_stroke_LHS
+			18: Ply2_pos.9 -> Low_cross{shuttlecock = 6} -> Ply1_front_stroke_RHS
+			13: Ply2_pos.9 -> High_straight{shuttlecock = 1} -> Ply1_back_stroke_LHS
+			7: Ply2_pos.9 -> High_cross{shuttlecock = 2} -> Ply1_back_stroke_RHS
+			54: Ply2_pos.9 -> Push_straight{shuttlecock = 3} -> Ply1_mid_stroke_LHS
+			55: Ply2_pos.9 -> Push_cross{shuttlecock = 4} -> Ply1_mid_stroke_RHS
+			23: Ply2_pos.9 -> Error {shuttlecock = 13} -> Ply1_scores   		                                                            
 			};
 
 // player 2 receives at position 10
 Ply2_mid_stroke_LHS = pcase { 
-			53: Low_straight{shuttlecock = 6} -> Ply1_front_stroke_RHS
-			20: Low_cross{shuttlecock = 5} -> Ply1_front_stroke_LHS
-			9: High_straight{shuttlecock = 2} -> Ply1_back_stroke_RHS
-			16: High_cross{shuttlecock = 1} -> Ply1_back_stroke_LHS
-			39: Push_straight{shuttlecock = 4} -> Ply1_mid_stroke_RHS
-			55: Push_cross{shuttlecock = 3} -> Ply1_mid_stroke_LHS
-			11: Error {shuttlecock = 13} -> Ply1_scores    		                                                            
+			53: Ply2_pos.10 -> Low_straight{shuttlecock = 6} -> Ply1_front_stroke_RHS
+			20: Ply2_pos.10 -> Low_cross{shuttlecock = 5} -> Ply1_front_stroke_LHS
+			9: Ply2_pos.10 -> High_straight{shuttlecock = 2} -> Ply1_back_stroke_RHS
+			16: Ply2_pos.10 -> High_cross{shuttlecock = 1} -> Ply1_back_stroke_LHS
+			39: Ply2_pos.10 -> Push_straight{shuttlecock = 4} -> Ply1_mid_stroke_RHS
+			55: Ply2_pos.10 -> Push_cross{shuttlecock = 3} -> Ply1_mid_stroke_LHS
+			11: Ply2_pos.10 -> Error {shuttlecock = 13} -> Ply1_scores    		                                                            
 			};
 	
 // Front Stroke Events
 // player 1 receives at position 6
 Ply1_front_stroke_RHS = pcase { 
-			43: Lift_straight{shuttlecock = 12} -> Ply2_back_stroke_LHS
-			33: Lift_cross{shuttlecock = 11} -> Ply2_back_stroke_RHS
-			48: Net_straight{shuttlecock = 8} -> Ply2_front_stroke_LHS
-			14: Net_cross{shuttlecock = 7} -> Ply2_front_stroke_RHS
-			11: Error {shuttlecock = 13} -> Ply2_scores     		                                                            
+			43: Ply1_pos.6 -> Lift_straight{shuttlecock = 12} -> Ply2_back_stroke_LHS
+			33: Ply1_pos.6 -> Lift_cross{shuttlecock = 11} -> Ply2_back_stroke_RHS
+			48: Ply1_pos.6 -> Net_straight{shuttlecock = 8} -> Ply2_front_stroke_LHS
+			14: Ply1_pos.6 -> Net_cross{shuttlecock = 7} -> Ply2_front_stroke_RHS
+			11: Ply1_pos.6 -> Error {shuttlecock = 13} -> Ply2_scores     		                                                            
 			};
 			
 // player 1 receives at position 5
 Ply1_front_stroke_LHS = pcase { 
-			25: Lift_straight{shuttlecock = 11} -> Ply2_back_stroke_RHS
-			52: Lift_cross{shuttlecock = 12} -> Ply2_back_stroke_LHS
-			49: Net_straight{shuttlecock = 7} -> Ply2_front_stroke_RHS
-			14: Net_cross{shuttlecock = 8} -> Ply2_front_stroke_LHS
-			5: Error {shuttlecock = 13} -> Ply2_scores   		                                                            
+			25: Ply1_pos.5 -> Lift_straight{shuttlecock = 11} -> Ply2_back_stroke_RHS
+			52: Ply1_pos.5 -> Lift_cross{shuttlecock = 12} -> Ply2_back_stroke_LHS
+			49: Ply1_pos.5 -> Net_straight{shuttlecock = 7} -> Ply2_front_stroke_RHS
+			14: Ply1_pos.5 -> Net_cross{shuttlecock = 8} -> Ply2_front_stroke_LHS
+			5: Ply1_pos.5 -> Error {shuttlecock = 13} -> Ply2_scores   		                                                            
 			};
 
 // player 2 receives at position 7
 Ply2_front_stroke_RHS = pcase { 
-			56: Lift_straight{shuttlecock = 1} -> Ply1_back_stroke_LHS
-			27: Lift_cross{shuttlecock = 2} -> Ply1_back_stroke_RHS
-			58: Net_straight{shuttlecock = 5} -> Ply1_front_stroke_LHS
-			12: Net_cross{shuttlecock = 6} -> Ply1_front_stroke_RHS
-			8: Error {shuttlecock = 13} -> Ply1_scores     		                                                            
+			56: Ply2_pos.7 -> Lift_straight{shuttlecock = 1} -> Ply1_back_stroke_LHS
+			27: Ply2_pos.7 -> Lift_cross{shuttlecock = 2} -> Ply1_back_stroke_RHS
+			58: Ply2_pos.7 -> Net_straight{shuttlecock = 5} -> Ply1_front_stroke_LHS
+			12: Ply2_pos.7 -> Net_cross{shuttlecock = 6} -> Ply1_front_stroke_RHS
+			8: Ply2_pos.7 -> Error {shuttlecock = 13} -> Ply1_scores     		                                                            
 			};
 
 // player 2 receives at position 8
 Ply2_front_stroke_LHS = pcase { 
-			28: Lift_straight{shuttlecock = 2} -> Ply1_back_stroke_RHS
-			60: Lift_cross{shuttlecock = 1} -> Ply1_back_stroke_LHS
-			49: Net_straight{shuttlecock = 6} -> Ply1_front_stroke_RHS
-			12: Net_cross{shuttlecock = 5} -> Ply1_front_stroke_LHS
-			15: Error {shuttlecock = 13} -> Ply1_scores       		                                                            
+			28: Ply2_pos.8 -> Lift_straight{shuttlecock = 2} -> Ply1_back_stroke_RHS
+			60: Ply2_pos.8 -> Lift_cross{shuttlecock = 1} -> Ply1_back_stroke_LHS
+			49: Ply2_pos.8 -> Net_straight{shuttlecock = 6} -> Ply1_front_stroke_RHS
+			12: Ply2_pos.8 -> Net_cross{shuttlecock = 5} -> Ply1_front_stroke_LHS
+			15: Ply2_pos.8 -> Error {shuttlecock = 13} -> Ply1_scores       		                                                            
 			};
 
 // helper functions
