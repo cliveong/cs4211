@@ -43,7 +43,10 @@ Game = WhoServe1st; (Player1Serve [] Player2Serve);
 WhoServe1st = []i:{ply1_RHS,ply2_RHS}@ TossCoin{turn = i} -> Skip;
 Player1Serve = [won == na && turn == ply1_RHS]LKYReady_RHS -> Ply1_Serve_RHS [] [won == na && turn == ply1_LHS] LKYReady_LHS -> Ply1_Serve_LHS;
 Player2Serve = [won == na && turn == ply2_RHS]LSReady_RHS -> Ply2_Serve_RHS [] [won == na && turn == ply2_LHS] LSReady_LHS -> Ply2_Serve_LHS;
-NextPt = Player1Serve [] Player2Serve [] ([won != na] GameOver -> Skip);
+NextPt = atomic {Player1Serve || ShuttleCock1} [] atomic {Player2Serve || ShuttleCock2} [] ([won != na] GameOver -> Skip);
+
+ShuttleCock1 = Ply1.shuttlecock -> ShuttleCock;
+ShuttleCock2 = Ply2.shuttlecock -> ShuttleCock;
 
 //Service Events
 // player 1 serves at position 4
