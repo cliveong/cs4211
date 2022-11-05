@@ -28,14 +28,19 @@
 //
 //       *****
 
-enum{player1, player2, na};
-enum{ply1_RHS, ply1_LHS, ply2_RHS, ply2_LHS}; //serve position
+#define DEF_MATCH_POINT 20;
+#define MAX_POINT 30;
 
-var turn = na; //serve turn;
+enum{player1, player2, na};
+enum{ply1_RHS, ply1_LHS, ply2_RHS, ply2_LHS}; // Serve position
+enum{ply1_match_point, ply2_match_point, deuce, normal}; // Game State 
+
+var turn = na; // Serve turn;
+var won = na;
 var lky_score = 0;
 var ls_score = 0;
-var won = na;
 var shuttlecock = 13;
+var game_state = normal;
 
 Game = WhoServe1st; (Player1Serve [] Player2Serve);
 
@@ -44,21 +49,38 @@ Player1Serve = [won == na && turn == ply1_RHS]LKYReady_RHS -> Ply1_Serve_RHS [] 
 Player2Serve = [won == na && turn == ply2_RHS]LSReady_RHS -> Ply2_Serve_RHS [] [won == na && turn == ply2_LHS] LSReady_LHS -> Ply2_Serve_LHS;
 NextPt = Player1Serve [] Player2Serve [] ([won != na] GameOver -> Skip);
 
+// Rally End Events 
+Ply1_Error = {ls_score++;
+				if (game_state == ply2_match_point || ls_score == MAX_POINT) {won = player2}
+				else {
+					if (game_state == ply1_match_point && ls_score == lky_score) {game_state = deuce}
+					else if (ls_score == DEF_MATCH_POINT || game_state == deuce) {game_state = ply2_match_point}
+					turn = (ls_score%2)+2;
+				}
+			} -> NextPt;
+			
+Ply2_Error = {lky_score++;
+				if (game_state == ply1_match_point || lky_score == MAX_POINT) {won = player1}
+				else {
+					if (game_state == ply2_match_point && ls_score == lky_score) {game_state = deuce}
+					else if (lky_score == DEF_MATCH_POINT || game_state == deuce) {game_state = ply1_match_point}
+					turn = (lky_score%2);
+				}
+			} -> NextPt;
+
 //Service Events
 // player 1 serves at position 4
 Ply1_Serve_RHS = pcase {
 			6: ServeHigh_in{shuttlecock = 11} -> Ply2_back_stroke_RHS  
 			30: ServeLow_in{shuttlecock = 9} -> Ply2_mid_stroke_RHS
-			2: Serve_err{shuttlecock = 13} -> {ls_score++; if (ls_score == 21) {won = player2} 
-													else {turn = (ls_score%2)+2}} -> NextPt
+			2: Serve_err{shuttlecock = 13} -> Ply1_Error
 			};
 
 // player 1 serves at position 3
 Ply1_Serve_LHS = pcase{
 			4: ServeHigh_in{shuttlecock = 12} -> Ply2_back_stroke_LHS 
 			29: ServeLow_in{shuttlecock = 10} -> Ply2_mid_stroke_LHS
-			1: Serve_err{shuttlecock = 13} -> {ls_score++; if (ls_score == 21) {won = player2}
-													else {turn = (ls_score%2)+2}} -> NextPt 
+			1: Serve_err{shuttlecock = 13} -> Ply1_Error
 			};
 			
 
@@ -66,16 +88,14 @@ Ply1_Serve_LHS = pcase{
 Ply2_Serve_RHS = pcase {                             
 			7: ServeHigh_in{shuttlecock = 2} -> Ply1_back_stroke_RHS  
 			30: ServeLow_in{shuttlecock = 4} -> Ply1_mid_stroke_RHS
-			2: Serve_err{shuttlecock = 13} -> {lky_score++; if (lky_score == 21) {won = player1} 
-													else {turn = lky_score%2}} -> NextPt 
+			2: Serve_err{shuttlecock = 13} -> Ply2_Error 
 			};
 
 // player 2 serves at position 10
 Ply2_Serve_LHS = pcase {                             
 			6: ServeHigh_in{shuttlecock = 1} -> Ply1_back_stroke_LHS  
 			29: ServeLow_in{shuttlecock = 3} -> Ply1_mid_stroke_LHS
-			1: Serve_err{shuttlecock = 13} -> {lky_score++; if (lky_score == 21) {won = player1} 
-													else {turn = (lky_score%2)}} -> NextPt 
+			1: Serve_err{shuttlecock = 13} -> Ply2_Error
 			};
 
 // Back Stroke Events
@@ -87,8 +107,7 @@ Ply1_back_stroke_RHS = pcase {
 			11: Drop_cross{shuttlecock = 7} -> Ply2_front_stroke_RHS
 			28: Smash_straight{shuttlecock = 10} -> Ply2_mid_stroke_LHS
 			21: Smash_cross{shuttlecock = 9} -> Ply2_mid_stroke_RHS
-			8: Error {shuttlecock = 13} -> {ls_score++; if (ls_score == 21) {won = player2}
-													else {turn = (ls_score%2)+2}} -> NextPt      		                                                            
+			8: Error {shuttlecock = 13} -> Ply1_Error      		                                                            
 			};
 
 // player 1 receives at position 1
@@ -99,8 +118,7 @@ Ply1_back_stroke_LHS = pcase {
 			18: Drop_cross{shuttlecock = 8} -> Ply2_front_stroke_LHS
 			52: Smash_straight{shuttlecock = 9} -> Ply2_mid_stroke_RHS
 			25: Smash_cross{shuttlecock = 10} -> Ply2_mid_stroke_LHS
-			7: Error {shuttlecock = 13} -> {ls_score++; if (ls_score == 21) {won = player2}
-													else {turn = (ls_score%2)+2}} -> NextPt      		                                                            
+			7: Error {shuttlecock = 13} -> Ply1_Error    		                                                            
 			};
 
 // player 2 receives at position 11
@@ -111,8 +129,7 @@ Ply2_back_stroke_RHS = pcase {
 			15: Drop_cross{shuttlecock = 6} -> Ply1_front_stroke_RHS
 			35: Smash_straight{shuttlecock = 3} -> Ply1_mid_stroke_LHS
 			24: Smash_cross{shuttlecock = 4} -> Ply1_mid_stroke_RHS
-			4: Error {shuttlecock = 13} -> {lky_score++; if (lky_score == 21) {won = player1} 
-													else {turn = (lky_score%2)}} -> NextPt     		                                                            
+			4: Error {shuttlecock = 13} -> Ply2_Error  		                                                            
 			};
 
 // player 2 receives at position 12
@@ -123,8 +140,7 @@ Ply2_back_stroke_LHS = pcase {
 			10: Drop_cross{shuttlecock = 5} -> Ply1_front_stroke_LHS
 			54: Smash_straight{shuttlecock = 4} -> Ply1_mid_stroke_RHS
 			30: Smash_cross{shuttlecock = 3} -> Ply1_mid_stroke_LHS
-			11: Error {shuttlecock = 13} -> {lky_score++; if (lky_score == 21) {won = player1} 
-													else {turn = (lky_score%2)}} -> NextPt     		                                                            
+			11: Error {shuttlecock = 13} -> Ply2_Error     		                                                            
 			};
 
 // Mid Stroke Events
@@ -136,8 +152,7 @@ Ply1_mid_stroke_RHS = pcase {
 			6: High_cross{shuttlecock = 11} -> Ply2_back_stroke_RHS
 			52: Push_straight{shuttlecock = 10} -> Ply2_mid_stroke_LHS
 			35: Push_cross{shuttlecock = 9} -> Ply2_mid_stroke_RHS
-			22: Error {shuttlecock = 13} -> {ls_score++; if (ls_score == 21) {won = player2}
-													else {turn = (ls_score%2)+2}} -> NextPt      		                                                            
+			22: Error {shuttlecock = 13} -> Ply1_Error      		                                                            
 			};
 
 // player 1 receives at position 3
@@ -148,8 +163,7 @@ Ply1_mid_stroke_LHS = pcase {
 			8: High_cross{shuttlecock = 12} -> Ply2_back_stroke_LHS
 			59: Push_straight{shuttlecock = 9} -> Ply2_mid_stroke_RHS
 			49: Push_cross{shuttlecock = 10} -> Ply2_mid_stroke_LHS
-			13: Error {shuttlecock = 13} -> {ls_score++; if (ls_score == 21) {won = player2}
-													else {turn = (ls_score%2)+2}} -> NextPt      		                                                            
+			13: Error {shuttlecock = 13} -> Ply1_Error      		                                                            
 			};
 
 // player 2 receives at position 9
@@ -160,8 +174,7 @@ Ply2_mid_stroke_RHS = pcase {
 			7: High_cross{shuttlecock = 2} -> Ply1_back_stroke_RHS
 			54: Push_straight{shuttlecock = 3} -> Ply1_mid_stroke_LHS
 			55: Push_cross{shuttlecock = 4} -> Ply1_mid_stroke_RHS
-			23: Error {shuttlecock = 13} -> {lky_score++; if (lky_score == 21) {won = player1}
-													else {turn = (lky_score%2)}} -> NextPt       		                                                            
+			23: Error {shuttlecock = 13} -> Ply2_Error      		                                                            
 			};
 
 // player 2 receives at position 10
@@ -172,8 +185,7 @@ Ply2_mid_stroke_LHS = pcase {
 			16: High_cross{shuttlecock = 1} -> Ply1_back_stroke_LHS
 			39: Push_straight{shuttlecock = 4} -> Ply1_mid_stroke_RHS
 			55: Push_cross{shuttlecock = 3} -> Ply1_mid_stroke_LHS
-			11: Error {shuttlecock = 13} -> {lky_score++; if (lky_score == 21) {won = player1}
-													else {turn = (lky_score%2)}} -> NextPt      		                                                            
+			11: Error {shuttlecock = 13} -> Ply2_Error      		                                                            
 			};
 	
 // Front Stroke Events
@@ -183,8 +195,7 @@ Ply1_front_stroke_RHS = pcase {
 			33: Lift_cross{shuttlecock = 11} -> Ply2_back_stroke_RHS
 			48: Net_straight{shuttlecock = 8} -> Ply2_front_stroke_LHS
 			14: Net_cross{shuttlecock = 7} -> Ply2_front_stroke_RHS
-			11: Error {shuttlecock = 13} -> {ls_score++; if (ls_score == 21) {won = player2}
-													else {turn = (ls_score%2)+2}} -> NextPt      		                                                            
+			11: Error {shuttlecock = 13} -> Ply1_Error      		                                                            
 			};
 			
 // player 1 receives at position 5
@@ -193,8 +204,7 @@ Ply1_front_stroke_LHS = pcase {
 			52: Lift_cross{shuttlecock = 12} -> Ply2_back_stroke_LHS
 			49: Net_straight{shuttlecock = 7} -> Ply2_front_stroke_RHS
 			14: Net_cross{shuttlecock = 8} -> Ply2_front_stroke_LHS
-			5: Error {shuttlecock = 13} -> {ls_score++; if (ls_score == 21) {won = player2}
-													else {turn = (ls_score%2)+2}} -> NextPt      		                                                            
+			5: Error {shuttlecock = 13} -> Ply1_Error      		                                                            
 			};
 
 // player 2 receives at position 7
@@ -203,8 +213,7 @@ Ply2_front_stroke_RHS = pcase {
 			27: Lift_cross{shuttlecock = 2} -> Ply1_back_stroke_RHS
 			58: Net_straight{shuttlecock = 5} -> Ply1_front_stroke_LHS
 			12: Net_cross{shuttlecock = 6} -> Ply1_front_stroke_RHS
-			8: Error {shuttlecock = 13} -> {lky_score++; if (lky_score == 21) {won = player1}
-													else {turn = (lky_score%2)}} -> NextPt       		                                                            
+			8: Error {shuttlecock = 13} -> Ply2_Error  		                                                            
 			};
 
 // player 2 receives at position 8
@@ -213,8 +222,7 @@ Ply2_front_stroke_LHS = pcase {
 			60: Lift_cross{shuttlecock = 1} -> Ply1_back_stroke_LHS
 			49: Net_straight{shuttlecock = 6} -> Ply1_front_stroke_RHS
 			12: Net_cross{shuttlecock = 5} -> Ply1_front_stroke_LHS
-			15: Error {shuttlecock = 13} -> {lky_score++; if (lky_score == 21) {won = player1}
-													else {turn = (lky_score%2)}} -> NextPt        		                                                            
+			15: Error {shuttlecock = 13} -> Ply2_Error      		                                                            
 			};
 	                                                            
 
