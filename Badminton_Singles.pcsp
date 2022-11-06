@@ -30,7 +30,7 @@
 
 #define DEF_MATCH_POINT 20;
 #define MAX_POINT 30;
-#define FIRST_TO 3;
+#define FIRST_TO 2;
 
 enum{player1, player2, na};
 enum{ply1_RHS, ply1_LHS, ply2_RHS, ply2_LHS}; // Serve position
