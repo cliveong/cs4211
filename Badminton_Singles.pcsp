@@ -30,6 +30,7 @@
 
 #define DEF_MATCH_POINT 20;
 #define MAX_POINT 30;
+#define FIRST_TO 3;
 
 enum{player1, player2, na};
 enum{ply1_RHS, ply1_LHS, ply2_RHS, ply2_LHS}; // Serve position
@@ -41,6 +42,7 @@ var lky_score = 0;
 var ls_score = 0;
 var shuttlecock = 13;
 var game_state = normal;
+var games_won[2];
 
 Game = WhoServe1st; (Player1Serve [] Player2Serve);
 
@@ -50,23 +52,33 @@ Player2Serve = [won == na && turn == ply2_RHS]LSReady_RHS -> Ply2_Serve_RHS [] [
 NextPt = Player1Serve [] Player2Serve [] ([won != na] GameOver -> Skip);
 
 // Rally End Events 
-Ply1_Error = {ls_score++;
-				if (game_state == ply2_match_point || ls_score == MAX_POINT) {won = player2}
-				else {
-					if (game_state == ply1_match_point && ls_score == lky_score) {game_state = deuce}
-					else if (ls_score == DEF_MATCH_POINT || game_state == deuce) {game_state = ply2_match_point}
-					turn = (ls_score%2)+2;
-				}
-			} -> NextPt;
+Ply1_Error = {
+	ls_score++;
+	if (game_state == ply2_match_point || ls_score == MAX_POINT) {
+		games_won[player2]++;
+		if (games_won[player2] == FIRST_TO) {won = player2}
+		else {lky_score = 0; ls_score = 0; turn = ply2_RHS; game_state = normal;}
+	}
+	else {
+		if (game_state == ply1_match_point && ls_score == lky_score) {game_state = deuce}
+		else if (ls_score == DEF_MATCH_POINT || game_state == deuce) {game_state = ply2_match_point}
+			turn = (ls_score%2)+2;
+		}
+} -> NextPt;
 			
-Ply2_Error = {lky_score++;
-				if (game_state == ply1_match_point || lky_score == MAX_POINT) {won = player1}
-				else {
-					if (game_state == ply2_match_point && ls_score == lky_score) {game_state = deuce}
-					else if (lky_score == DEF_MATCH_POINT || game_state == deuce) {game_state = ply1_match_point}
-					turn = (lky_score%2);
-				}
-			} -> NextPt;
+Ply2_Error = {
+	lky_score++;
+	if (game_state == ply1_match_point || lky_score == MAX_POINT) {
+		games_won[player1]++;
+		if (games_won[player1] == FIRST_TO) {won = player1}
+		else {lky_score = 0; ls_score = 0; turn = ply1_RHS; game_state = normal;}
+	}
+	else {
+		if (game_state == ply2_match_point && ls_score == lky_score) {game_state = deuce}
+		else if (lky_score == DEF_MATCH_POINT || game_state == deuce) {game_state = ply1_match_point}
+			turn = (lky_score%2);
+		}
+} -> NextPt;
 
 //Service Events
 // player 1 serves at position 4
