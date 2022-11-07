@@ -56,7 +56,7 @@ NextPt = Player1Serve [] Player2Serve [] ([won != na] GameOver -> Skip);
 // Rally End Events 
 Ply1_Error = {
 	ls_score++;
-	if (ls_score == 11) {
+	if (ls_score == 11 && lky_score < 11) {
 		p1FatigueLevel = p1FatigueLevel - 3;
 		p2FatigueLevel = p2FatigueLevel - 3;
 	}
@@ -74,7 +74,7 @@ Ply1_Error = {
 			
 Ply2_Error = {
 	lky_score++;
-	if (lky_score == 11) {
+	if (lky_score == 11 && ls_score < 11) {
 		p1FatigueLevel = p1FatigueLevel - 3;
 		p2FatigueLevel = p2FatigueLevel - 3;
 	}
