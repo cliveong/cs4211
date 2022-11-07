@@ -28,9 +28,10 @@
 //
 //       *****
 
-#define DEF_MATCH_POINT 20;
-#define MAX_POINT 30;
-#define FIRST_TO 2;
+#import "PAT.Math";
+#define DEF_MATCH_POINT 2;
+#define MAX_POINT 3;
+#define FIRST_TO 1;
 
 enum{player1, player2, na};
 enum{ply1_RHS, ply1_LHS, ply2_RHS, ply2_LHS}; // Serve position
@@ -56,9 +57,11 @@ NextPt = Player1Serve [] Player2Serve [] ([won != na] GameOver -> Skip);
 // Rally End Events 
 Ply1_Error = {
 	ls_score++;
+	p1FatigueLevel++;
+	p2FatigueLevel++;
 	if (ls_score == 11 && lky_score < 11) {
-		p1FatigueLevel = p1FatigueLevel - 3;
-		p2FatigueLevel = p2FatigueLevel - 3;
+		p1FatigueLevel = call(Max, p1FatigueLevel - 3, 0);
+		p2FatigueLevel = call(Max, p2FatigueLevel - 3, 0);
 	}
 	if (game_state == ply2_match_point || ls_score == MAX_POINT) {
 		games_won[player2]++;
@@ -122,7 +125,7 @@ Ply2_Serve_LHS = pcase {
 
 // Back Stroke Events
 // player 1 receives at position 2
-Ply1_back_stroke_RHS = {p1FatigueLevel++} -> pcase { 
+Ply1_back_stroke_RHS = pcase { 
 			13: Lob_straight{shuttlecock = 12} -> Ply2_back_stroke_LHS
 			7: Lob_cross{shuttlecock = 11} -> Ply2_back_stroke_RHS
 			9: Drop_straight{shuttlecock = 8} -> Ply2_front_stroke_LHS
@@ -134,7 +137,7 @@ Ply1_back_stroke_RHS = {p1FatigueLevel++} -> pcase {
 			}; 
 
 // player 1 receives at position 1
-Ply1_back_stroke_LHS = {p1FatigueLevel++} -> pcase { 
+Ply1_back_stroke_LHS = pcase { 
 			15: Lob_straight{shuttlecock = 11} -> Ply2_back_stroke_RHS
 			18: Lob_cross{shuttlecock = 12} -> Ply2_back_stroke_LHS
 			7: Drop_straight{shuttlecock = 7} -> Ply2_front_stroke_RHS
@@ -146,7 +149,7 @@ Ply1_back_stroke_LHS = {p1FatigueLevel++} -> pcase {
 			};
 
 // player 2 receives at position 11
-Ply2_back_stroke_RHS = {p2FatigueLevel++} -> pcase { 
+Ply2_back_stroke_RHS = pcase { 
 			8: Lob_straight{shuttlecock = 1} -> Ply1_back_stroke_LHS
 			6: Lob_cross{shuttlecock = 2} -> Ply1_back_stroke_RHS
 			4: Drop_straight{shuttlecock = 5} -> Ply1_front_stroke_LHS
@@ -158,7 +161,7 @@ Ply2_back_stroke_RHS = {p2FatigueLevel++} -> pcase {
 			};
 
 // player 2 receives at position 12
-Ply2_back_stroke_LHS = {p2FatigueLevel++} -> pcase { 
+Ply2_back_stroke_LHS = pcase { 
 			23: Lob_straight{shuttlecock = 2} -> Ply1_back_stroke_RHS
 			15: Lob_cross{shuttlecock = 1} -> Ply1_back_stroke_LHS
 			1: Drop_straight{shuttlecock = 6} -> Ply1_front_stroke_RHS
@@ -171,7 +174,7 @@ Ply2_back_stroke_LHS = {p2FatigueLevel++} -> pcase {
 
 // Mid Stroke Events
 // player 1 receives at position 4
-Ply1_mid_stroke_RHS = {p1FatigueLevel++} -> pcase { 
+Ply1_mid_stroke_RHS = pcase { 
 			62: Low_straight{shuttlecock = 8} -> Ply2_front_stroke_LHS
 			20: Low_cross{shuttlecock = 7} -> Ply2_front_stroke_RHS
 			17: High_straight{shuttlecock = 12} -> Ply2_back_stroke_LHS
@@ -183,7 +186,7 @@ Ply1_mid_stroke_RHS = {p1FatigueLevel++} -> pcase {
 			};
 
 // player 1 receives at position 3
-Ply1_mid_stroke_LHS = {p1FatigueLevel++} -> pcase { 
+Ply1_mid_stroke_LHS = pcase { 
 			63: Low_straight{shuttlecock = 7} -> Ply2_front_stroke_RHS
 			11: Low_cross{shuttlecock = 8} -> Ply2_front_stroke_LHS
 			21: High_straight{shuttlecock = 11} -> Ply2_back_stroke_RHS
@@ -195,7 +198,7 @@ Ply1_mid_stroke_LHS = {p1FatigueLevel++} -> pcase {
 			};
 
 // player 2 receives at position 9
-Ply2_mid_stroke_RHS = {p2FatigueLevel++} -> pcase { 
+Ply2_mid_stroke_RHS = pcase { 
 			39: Low_straight{shuttlecock = 5} -> Ply1_front_stroke_LHS
 			18: Low_cross{shuttlecock = 6} -> Ply1_front_stroke_RHS
 			13: High_straight{shuttlecock = 1} -> Ply1_back_stroke_LHS
@@ -207,7 +210,7 @@ Ply2_mid_stroke_RHS = {p2FatigueLevel++} -> pcase {
 			};
 
 // player 2 receives at position 10
-Ply2_mid_stroke_LHS = {p2FatigueLevel++} -> pcase { 
+Ply2_mid_stroke_LHS = pcase { 
 			53: Low_straight{shuttlecock = 6} -> Ply1_front_stroke_RHS
 			20: Low_cross{shuttlecock = 5} -> Ply1_front_stroke_LHS
 			9: High_straight{shuttlecock = 2} -> Ply1_back_stroke_RHS
@@ -220,7 +223,7 @@ Ply2_mid_stroke_LHS = {p2FatigueLevel++} -> pcase {
 	
 // Front Stroke Events
 // player 1 receives at position 6
-Ply1_front_stroke_RHS = {p1FatigueLevel++} -> pcase { 
+Ply1_front_stroke_RHS = pcase { 
 			43: Lift_straight{shuttlecock = 12} -> Ply2_back_stroke_LHS
 			33: Lift_cross{shuttlecock = 11} -> Ply2_back_stroke_RHS
 			48: Net_straight{shuttlecock = 8} -> Ply2_front_stroke_LHS
@@ -230,7 +233,7 @@ Ply1_front_stroke_RHS = {p1FatigueLevel++} -> pcase {
 			};
 			
 // player 1 receives at position 5
-Ply1_front_stroke_LHS = {p1FatigueLevel++} -> pcase { 
+Ply1_front_stroke_LHS = pcase { 
 			25: Lift_straight{shuttlecock = 11} -> Ply2_back_stroke_RHS
 			52: Lift_cross{shuttlecock = 12} -> Ply2_back_stroke_LHS
 			49: Net_straight{shuttlecock = 7} -> Ply2_front_stroke_RHS
@@ -240,7 +243,7 @@ Ply1_front_stroke_LHS = {p1FatigueLevel++} -> pcase {
 			};
 
 // player 2 receives at position 7
-Ply2_front_stroke_RHS = {p2FatigueLevel++} -> pcase { 
+Ply2_front_stroke_RHS = pcase { 
 			56: Lift_straight{shuttlecock = 1} -> Ply1_back_stroke_LHS
 			27: Lift_cross{shuttlecock = 2} -> Ply1_back_stroke_RHS
 			58: Net_straight{shuttlecock = 5} -> Ply1_front_stroke_LHS
@@ -250,7 +253,7 @@ Ply2_front_stroke_RHS = {p2FatigueLevel++} -> pcase {
 			};
 
 // player 2 receives at position 8
-Ply2_front_stroke_LHS = {p2FatigueLevel++} -> pcase { 
+Ply2_front_stroke_LHS = pcase { 
 			28: Lift_straight{shuttlecock = 2} -> Ply1_back_stroke_RHS
 			60: Lift_cross{shuttlecock = 1} -> Ply1_back_stroke_LHS
 			49: Net_straight{shuttlecock = 6} -> Ply1_front_stroke_RHS
