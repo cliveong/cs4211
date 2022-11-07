@@ -43,6 +43,8 @@ var ls_score = 0;
 var shuttlecock = 13;
 var game_state = normal;
 var games_won[2];
+var p1FatigueLevel = 0;
+var p2FatigueLevel = 0;
 
 Game = WhoServe1st; (Player1Serve [] Player2Serve);
 
@@ -54,6 +56,10 @@ NextPt = Player1Serve [] Player2Serve [] ([won != na] GameOver -> Skip);
 // Rally End Events 
 Ply1_Error = {
 	ls_score++;
+	if (ls_score == 11) {
+		p1FatigueLevel = p1FatigueLevel - 3;
+		p2FatigueLevel = p2FatigueLevel - 3;
+	}
 	if (game_state == ply2_match_point || ls_score == MAX_POINT) {
 		games_won[player2]++;
 		if (games_won[player2] == FIRST_TO) {won = player2}
@@ -68,6 +74,10 @@ Ply1_Error = {
 			
 Ply2_Error = {
 	lky_score++;
+	if (lky_score == 11) {
+		p1FatigueLevel = p1FatigueLevel - 3;
+		p2FatigueLevel = p2FatigueLevel - 3;
+	}
 	if (game_state == ply1_match_point || lky_score == MAX_POINT) {
 		games_won[player1]++;
 		if (games_won[player1] == FIRST_TO) {won = player1}
@@ -119,7 +129,8 @@ Ply1_back_stroke_RHS = pcase {
 			11: Drop_cross{shuttlecock = 7} -> Ply2_front_stroke_RHS
 			28: Smash_straight{shuttlecock = 10} -> Ply2_mid_stroke_LHS
 			21: Smash_cross{shuttlecock = 9} -> Ply2_mid_stroke_RHS
-			8: Error {shuttlecock = 13} -> Ply1_Error      		                                                            
+			8: Error {shuttlecock = 13} -> Ply1_Error
+			p1FatigueLevel / 30: Error {shuttlecock = 13} -> Ply1_Error       		                                                            
 			};
 
 // player 1 receives at position 1
@@ -130,7 +141,8 @@ Ply1_back_stroke_LHS = pcase {
 			18: Drop_cross{shuttlecock = 8} -> Ply2_front_stroke_LHS
 			52: Smash_straight{shuttlecock = 9} -> Ply2_mid_stroke_RHS
 			25: Smash_cross{shuttlecock = 10} -> Ply2_mid_stroke_LHS
-			7: Error {shuttlecock = 13} -> Ply1_Error    		                                                            
+			7: Error {shuttlecock = 13} -> Ply1_Error
+			p1FatigueLevel / 30: Error {shuttlecock = 13} -> Ply1_Error    		                                                            
 			};
 
 // player 2 receives at position 11
@@ -141,7 +153,8 @@ Ply2_back_stroke_RHS = pcase {
 			15: Drop_cross{shuttlecock = 6} -> Ply1_front_stroke_RHS
 			35: Smash_straight{shuttlecock = 3} -> Ply1_mid_stroke_LHS
 			24: Smash_cross{shuttlecock = 4} -> Ply1_mid_stroke_RHS
-			4: Error {shuttlecock = 13} -> Ply2_Error  		                                                            
+			4: Error {shuttlecock = 13} -> Ply2_Error
+			p2FatigueLevel / 30: Error {shuttlecock = 13} -> Ply2_Error  		                                                            
 			};
 
 // player 2 receives at position 12
@@ -152,7 +165,8 @@ Ply2_back_stroke_LHS = pcase {
 			10: Drop_cross{shuttlecock = 5} -> Ply1_front_stroke_LHS
 			54: Smash_straight{shuttlecock = 4} -> Ply1_mid_stroke_RHS
 			30: Smash_cross{shuttlecock = 3} -> Ply1_mid_stroke_LHS
-			11: Error {shuttlecock = 13} -> Ply2_Error     		                                                            
+			11: Error {shuttlecock = 13} -> Ply2_Error
+			p2FatigueLevel / 30: Error {shuttlecock = 13} -> Ply2_Error     		                                                            
 			};
 
 // Mid Stroke Events
@@ -164,7 +178,8 @@ Ply1_mid_stroke_RHS = pcase {
 			6: High_cross{shuttlecock = 11} -> Ply2_back_stroke_RHS
 			52: Push_straight{shuttlecock = 10} -> Ply2_mid_stroke_LHS
 			35: Push_cross{shuttlecock = 9} -> Ply2_mid_stroke_RHS
-			22: Error {shuttlecock = 13} -> Ply1_Error      		                                                            
+			22: Error {shuttlecock = 13} -> Ply1_Error
+			p1FatigueLevel / 30: Error {shuttlecock = 13} -> Ply1_Error      		                                                            
 			};
 
 // player 1 receives at position 3
@@ -175,7 +190,8 @@ Ply1_mid_stroke_LHS = pcase {
 			8: High_cross{shuttlecock = 12} -> Ply2_back_stroke_LHS
 			59: Push_straight{shuttlecock = 9} -> Ply2_mid_stroke_RHS
 			49: Push_cross{shuttlecock = 10} -> Ply2_mid_stroke_LHS
-			13: Error {shuttlecock = 13} -> Ply1_Error      		                                                            
+			13: Error {shuttlecock = 13} -> Ply1_Error      	
+			p1FatigueLevel / 30: Error {shuttlecock = 13} -> Ply1_Error	                                                            
 			};
 
 // player 2 receives at position 9
@@ -186,7 +202,8 @@ Ply2_mid_stroke_RHS = pcase {
 			7: High_cross{shuttlecock = 2} -> Ply1_back_stroke_RHS
 			54: Push_straight{shuttlecock = 3} -> Ply1_mid_stroke_LHS
 			55: Push_cross{shuttlecock = 4} -> Ply1_mid_stroke_RHS
-			23: Error {shuttlecock = 13} -> Ply2_Error      		                                                            
+			23: Error {shuttlecock = 13} -> Ply2_Error
+			p2FatigueLevel / 30: Error {shuttlecock = 13} -> Ply2_Error      		                                                            
 			};
 
 // player 2 receives at position 10
@@ -197,7 +214,8 @@ Ply2_mid_stroke_LHS = pcase {
 			16: High_cross{shuttlecock = 1} -> Ply1_back_stroke_LHS
 			39: Push_straight{shuttlecock = 4} -> Ply1_mid_stroke_RHS
 			55: Push_cross{shuttlecock = 3} -> Ply1_mid_stroke_LHS
-			11: Error {shuttlecock = 13} -> Ply2_Error      		                                                            
+			11: Error {shuttlecock = 13} -> Ply2_Error
+			p2FatigueLevel / 30: Error {shuttlecock = 13} -> Ply2_Error      		                                                            
 			};
 	
 // Front Stroke Events
@@ -207,7 +225,8 @@ Ply1_front_stroke_RHS = pcase {
 			33: Lift_cross{shuttlecock = 11} -> Ply2_back_stroke_RHS
 			48: Net_straight{shuttlecock = 8} -> Ply2_front_stroke_LHS
 			14: Net_cross{shuttlecock = 7} -> Ply2_front_stroke_RHS
-			11: Error {shuttlecock = 13} -> Ply1_Error      		                                                            
+			11: Error {shuttlecock = 13} -> Ply1_Error
+			p1FatigueLevel / 30: Error {shuttlecock = 13} -> Ply1_Error      		                                                            
 			};
 			
 // player 1 receives at position 5
@@ -216,7 +235,8 @@ Ply1_front_stroke_LHS = pcase {
 			52: Lift_cross{shuttlecock = 12} -> Ply2_back_stroke_LHS
 			49: Net_straight{shuttlecock = 7} -> Ply2_front_stroke_RHS
 			14: Net_cross{shuttlecock = 8} -> Ply2_front_stroke_LHS
-			5: Error {shuttlecock = 13} -> Ply1_Error      		                                                            
+			5: Error {shuttlecock = 13} -> Ply1_Error
+			p1FatigueLevel / 30: Error {shuttlecock = 13} -> Ply1_Error      		                                                            
 			};
 
 // player 2 receives at position 7
@@ -225,7 +245,8 @@ Ply2_front_stroke_RHS = pcase {
 			27: Lift_cross{shuttlecock = 2} -> Ply1_back_stroke_RHS
 			58: Net_straight{shuttlecock = 5} -> Ply1_front_stroke_LHS
 			12: Net_cross{shuttlecock = 6} -> Ply1_front_stroke_RHS
-			8: Error {shuttlecock = 13} -> Ply2_Error  		                                                            
+			8: Error {shuttlecock = 13} -> Ply2_Error
+			p2FatigueLevel / 30: Error {shuttlecock = 13} -> Ply2_Error  		                                                            
 			};
 
 // player 2 receives at position 8
@@ -234,7 +255,8 @@ Ply2_front_stroke_LHS = pcase {
 			60: Lift_cross{shuttlecock = 1} -> Ply1_back_stroke_LHS
 			49: Net_straight{shuttlecock = 6} -> Ply1_front_stroke_RHS
 			12: Net_cross{shuttlecock = 5} -> Ply1_front_stroke_LHS
-			15: Error {shuttlecock = 13} -> Ply2_Error      		                                                            
+			15: Error {shuttlecock = 13} -> Ply2_Error
+			p2FatigueLevel / 30: Error {shuttlecock = 13} -> Ply2_Error      		                                                            
 			};
 	                                                            
 
