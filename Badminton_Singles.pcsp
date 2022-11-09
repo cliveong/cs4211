@@ -65,8 +65,8 @@ Ply1_Error = {
 	}
 	if (game_state == ply2_match_point || ls_score == MAX_POINT) {
 		games_won[player2]++;
-		if (games_won[player2] == FIRST_TO) {won = player2; p1FatigueLevel = 0; p2FatigueLevel = 0;}
-		else {lky_score = 0; ls_score = 0; turn = ply2_RHS; game_state = normal;}
+		if (games_won[player2] == FIRST_TO) {won = player2;}
+		else {lky_score = 0; ls_score = 0; turn = ply2_RHS; game_state = normal; p1FatigueLevel = 0; p2FatigueLevel = 0;}
 	}
 	else {
 		if (game_state == ply1_match_point && ls_score == lky_score) {game_state = deuce}
