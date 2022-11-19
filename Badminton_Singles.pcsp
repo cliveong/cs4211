@@ -29,7 +29,7 @@
 //       *****
 
 #import "PAT.Math";
-#define DEF_MATCH_POINT 21;
+#define DEF_MATCH_POINT 20;
 #define MAX_POINT 30;
 #define FIRST_TO 2;
 
@@ -71,8 +71,9 @@ Ply1_Error = {
 	else {
 		if (game_state == ply1_match_point && ls_score == lky_score) {game_state = deuce}
 		else if (ls_score == DEF_MATCH_POINT || game_state == deuce) {game_state = ply2_match_point}
-			turn = (ls_score%2)+2;
-		}
+		
+		turn = (ls_score%2)+2;
+	}
 } -> NextPt;
 			
 Ply2_Error = {
@@ -83,14 +84,15 @@ Ply2_Error = {
 	}
 	if (game_state == ply1_match_point || lky_score == MAX_POINT) {
 		games_won[player1]++;
-		if (games_won[player1] == FIRST_TO) {won = player1; p1FatigueLevel = 0; p2FatigueLevel = 0;}
-		else {lky_score = 0; ls_score = 0; turn = ply1_RHS; game_state = normal;}
+		if (games_won[player1] == FIRST_TO) {won = player1;}
+		else {lky_score = 0; ls_score = 0; turn = ply1_RHS; game_state = normal; p1FatigueLevel = 0; p2FatigueLevel = 0;}
 	}
 	else {
 		if (game_state == ply2_match_point && ls_score == lky_score) {game_state = deuce}
 		else if (lky_score == DEF_MATCH_POINT || game_state == deuce) {game_state = ply1_match_point}
-			turn = (lky_score%2);
-		}
+		
+		turn = (lky_score%2);
+	}
 } -> NextPt;
 
 //Service Events
