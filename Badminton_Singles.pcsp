@@ -29,9 +29,9 @@
 //       *****
 
 #import "PAT.Math";
-#define DEF_MATCH_POINT 2;
-#define MAX_POINT 3;
-#define FIRST_TO 1;
+#define DEF_MATCH_POINT 20;
+#define MAX_POINT 30;
+#define FIRST_TO 2;
 
 enum{player1, player2, na};
 enum{ply1_RHS, ply1_LHS, ply2_RHS, ply2_LHS}; // Serve position
@@ -65,7 +65,7 @@ Ply1_Error = {
 	}
 	if (game_state == ply2_match_point || ls_score == MAX_POINT) {
 		games_won[player2]++;
-		if (games_won[player2] == FIRST_TO) {won = player2}
+		if (games_won[player2] == FIRST_TO) {won = player2;}
 		else {lky_score = 0; ls_score = 0; turn = ply2_RHS; game_state = normal; p1FatigueLevel = 0; p2FatigueLevel = 0;}
 	}
 	else {
@@ -84,7 +84,7 @@ Ply2_Error = {
 	}
 	if (game_state == ply1_match_point || lky_score == MAX_POINT) {
 		games_won[player1]++;
-		if (games_won[player1] == FIRST_TO) {won = player1}
+		if (games_won[player1] == FIRST_TO) {won = player1;}
 		else {lky_score = 0; ls_score = 0; turn = ply1_RHS; game_state = normal; p1FatigueLevel = 0; p2FatigueLevel = 0;}
 	}
 	else {
