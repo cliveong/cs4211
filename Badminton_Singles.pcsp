@@ -79,8 +79,8 @@ Ply1_Error = {
 Ply2_Error = {
 	lky_score++;
 	if (lky_score == 11 && ls_score < 11) {
-		p1FatigueLevel = p1FatigueLevel - 3;
-		p2FatigueLevel = p2FatigueLevel - 3;
+		p1FatigueLevel = call(Max, p1FatigueLevel - 6, 0);
+		p2FatigueLevel = call(Max, p2FatigueLevel - 6, 0);
 	}
 	if (game_state == ply1_match_point || lky_score == MAX_POINT) {
 		games_won[player1]++;
